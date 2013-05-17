@@ -1,0 +1,14 @@
+Usage:
+------
+1.) Open super_rocket_ragdolls.exe
+2.) Press the "..." button
+3.) Locate Engine.dll in your installation directory
+4.) Press the "Patch" button
+5.) Done! Load up the game and play
+
+FAQ:
+----
+Q: Why does the executable ask for admin priviledges?
+A: This mod requires making changes to "Engine.dll", a file that is normally
+located in the Program Files directory which is write-protected from regular
+programs.
