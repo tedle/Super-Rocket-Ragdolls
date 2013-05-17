@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "super_rocket_ragdolls", "super_rocket_ragdolls\super_rocket_ragdolls.vcxproj", "{63E3F985-14F0-4BE1-ADB0-316C7CE96F9A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "super_rocket_ragdolls", "super_rocket_ragdolls.vcxproj", "{63E3F985-14F0-4BE1-ADB0-316C7CE96F9A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -35,10 +35,10 @@ size_t PatternSearch(PBYTE haystack, size_t haystack_size, PBYTE pattern, size_t
 bool BackupDll(const char* file_location, PBYTE file_data, size_t file_size) {
     // Backup filename to filename.bak
     char dll_backup[1024] = {0};
-    strcat(dll_backup, file_location);
-    strcat(dll_backup, ".bak");
-    FILE* backup_file = fopen(dll_backup, "wb");
-    if (backup_file == nullptr) {
+    strcat_s(dll_backup, file_location);
+    strcat_s(dll_backup, ".bak");
+    FILE* backup_file;
+    if (fopen_s(&backup_file, dll_backup, "wb") != 0) {
         return false;
     }
     fwrite(file_data, sizeof(BYTE), file_size, backup_file);
@@ -93,10 +93,8 @@ void PatchSuperRocketRagdolls(HWND hwnd) {
     BYTE force_cap_replace[] = { 0x00, 0x00, 0x10, 0x41 };
     size_t force_cap_replace_size = 4;
 
-    FILE* file = fopen(dll_location, "rb+");
-
-    // Make sure we opened it
-    if (file == nullptr) {
+    FILE* file;
+    if (fopen_s(&file, dll_location, "rb+") != 0) {
         MessageBox(hwnd, L"Could not open Engine.dll", L"Error", MB_OK);
         return;
     }

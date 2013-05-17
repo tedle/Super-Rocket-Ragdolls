@@ -77,16 +77,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="resource.h" />
+    <ClInclude Include="src\resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="super_rocket_ragdolls.rc" />
+    <None Include="src\gdico.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="gdico.ico" />
+    <ResourceCompile Include="src\super_rocket_ragdolls.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
