@@ -13,5 +13,5 @@ A: This mod requires making changes to "Engine.dll", a file that is normally
 located in the Program Files directory which is write-protected from regular
 programs.
 
-Q: What if this mod corrupted Engine.dll?
+Q: What if Engine.dll becomes corrupted?
 A: There should be a backup in the same folder called Engine.dll.bak

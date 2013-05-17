@@ -13,12 +13,14 @@ size_t PatternSearch(PBYTE haystack, size_t haystack_size, PBYTE pattern, size_t
         jump_table[i] = pattern_size;
     }
 
+    // Fill up the jump table w/ char's distance to end of needle
     for (size_t i = 0; i < pattern_last; i++) {
         jump_table[pattern[i]] = pattern_last - i;
     }
 
+    // Compares starting from end of pattern & haystack[i]
     for (size_t i = pattern_last; i < haystack_size; i += jump_table[haystack[i]]) {
-        // Compares starting from end of pattern & haystack[i]
+        // Nested loop iterates through partial matches
         for (size_t j = pattern_last; pattern[j] == haystack[i-pattern_last+j]; j--) {
             // 0 is the end because we iterate backwards, complete match
             if (j == 0) {
@@ -31,6 +33,7 @@ size_t PatternSearch(PBYTE haystack, size_t haystack_size, PBYTE pattern, size_t
 }
 
 bool BackupDll(const char* file_location, PBYTE file_data, size_t file_size) {
+    // Backup filename to filename.bak
     char dll_backup[1024] = {0};
     strcat(dll_backup, file_location);
     strcat(dll_backup, ".bak");
@@ -75,7 +78,8 @@ void PatchSuperRocketRagdolls(HWND hwnd) {
     // This pattern searches for the vector.y = vector.y     * vector.force
     // and changes it to             vector.y = vector.force * vector.force
     // FLD DWORD PTR DS:[EAX+4] ---> FLD DWORD PTR DS:[EAX+10]
-    BYTE y_force_pattern[] = { 0xD9, 0x40, 0x04, 0xD8, 0xC9, 0xD9, 0x5D, 0xEC, 0xD8, 0x48, 0x08, 0x8B, 0x03, 0x8B, 0x90, 0x94 };
+    BYTE y_force_pattern[] = { 0xD9, 0x40, 0x04, 0xD8, 0xC9, 0xD9, 0x5D, 0xEC,
+                               0xD8, 0x48, 0x08, 0x8B, 0x03, 0x8B, 0x90, 0x94 };
     size_t y_force_pattern_size = 16;
     BYTE y_force_replace[] = { 0xD9, 0x40, 0x10 };
     size_t y_force_replace_size = 3;
@@ -83,7 +87,8 @@ void PatchSuperRocketRagdolls(HWND hwnd) {
     // This pattern searches for the physics cap, a 32-bit float = 12.0
     // and changes it to                            32-bit float =  9.0
     // 00 00 40 41 ---> 00 00 10 41
-    BYTE force_cap_pattern[] = { 0x00, 0x00, 0x40, 0x41, 0x6F, 0x12, 0x83, 0x3A, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2E, 0x40 };
+    BYTE force_cap_pattern[] = { 0x00, 0x00, 0x40, 0x41, 0x6F, 0x12, 0x83, 0x3A,
+                                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2E, 0x40 };
     size_t force_cap_pattern_size = 16;
     BYTE force_cap_replace[] = { 0x00, 0x00, 0x10, 0x41 };
     size_t force_cap_replace_size = 4;
@@ -123,7 +128,7 @@ void PatchSuperRocketRagdolls(HWND hwnd) {
     }
     fseek(file, match, SEEK_SET);
 
-    // Replace part of search & replace :)
+    // The replacing part of search & replace :)
     fwrite(y_force_replace, sizeof(BYTE), y_force_replace_size, file);
 
     // Repeat everything (it's ugly but a new struct type w/ dynamically allocated arrays seemed like overkill) 
@@ -150,7 +155,7 @@ void PatchSuperRocketRagdolls(HWND hwnd) {
 BOOL CALLBACK DialogProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
     switch (msg) {
         case WM_INITDIALOG: {
-            // Set icon and start animation thread
+            // Set icon
             HICON icon = LoadIcon(GetModuleHandle(0), MAKEINTRESOURCE(IDR_ICON));
             SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)icon);
             return TRUE;
