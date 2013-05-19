@@ -1,3 +1,10 @@
+// patch.h---------------------------------------------------------------------
+// Defines various functions used for interacting with Grim Dawn's .DLL files
+// General usage involves using LoadFile to place a .DLL into memory and then
+// PatchMemory to apply changes to it, and finally SaveFile to replace the
+// vanilla .DLL file
+// ----------------------------------------------------------------------------
+
 #include <stdio.h>
 #include <Windows.h>
 
@@ -13,6 +20,13 @@ enum PatchType {
 // Uses file_data and file_size as output args
 // Returns true on success, false on failure
 bool LoadFile(const char* filename, PBYTE* file_data, size_t* file_size);
+
+// Saves file from memory
+// Use of backup flag will append ".bak" to filename
+// Backup will not be written if one already exists
+// Returns true on success, false on failure
+bool SaveFile(const char* file_location, PBYTE file_data, size_t file_size,
+              bool backup=false);
 
 // Searches for needle in haystack
 // If needle_mask[i] is false, needle[i] is not evaluated

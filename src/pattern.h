@@ -1,3 +1,8 @@
+// pattern.h-------------------------------------------------------------------
+// Contains various search & replace byte code patterns for modifying the
+// the Grim Dawn's .DLL files
+// ----------------------------------------------------------------------------
+
 // Needed for BYTE definition
 #include <Windows.h>
 

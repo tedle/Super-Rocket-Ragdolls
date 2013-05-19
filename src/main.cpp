@@ -1,4 +1,9 @@
-// Need somes WinXP features
+// main.cpp -------------------------------------------------------------------
+// Contains program's entry point as well as all functions used to interact
+// with the Win32 API
+// ----------------------------------------------------------------------------
+
+// Need some WinXP features
 #define WINVER 0x0501
 #define _WIN32_WINNT 0x0501
 #define NTDDI_VERSION 0x05010300
@@ -33,33 +38,6 @@ void BrowseForDll(HWND hwnd) {
 	return;
 }
 
-// Backs up file_location to file_location.bak, expects file already loaded in
-// memory for optimization reasons
-// Returns true on success, false otherwise
-bool WriteDll(const char* file_location, PBYTE file_data, size_t file_size, bool backup=false) {
-    FILE* file;
-    char dll[1024] = {0};
-    strcat_s(dll, file_location);
-    if (backup) {
-        strcat_s(dll, ".bak");
-        // Checks if there is already a backup of the dll, and aborts if so
-        // because this implies Engine.dll is already modified and should not
-        // be written to a backup
-        fopen_s(&file, dll, "r");
-        if (file != nullptr) {
-            fclose(file);
-            return true;
-        }
-    }
-    if (fopen_s(&file, dll, "wb") != 0) {
-        return false;
-    }
-    fwrite(file_data, sizeof(BYTE), file_size, file);
-    fclose(file);
-
-    return true;
-}
-
 // Patches Grim Dawn's Engine.dll to provide rocket ragdoll physics
 void PatchRagdolls(HWND hwnd) {
     // Grab file location from text box
@@ -77,7 +55,7 @@ void PatchRagdolls(HWND hwnd) {
     }
 
     // Backup the dll
-    if (!WriteDll(dll_location, file_data, file_size, true)) {
+    if (!SaveFile(dll_location, file_data, file_size, true)) {
         MessageBox(hwnd, L"Failed to create backup of Engine.dll, aborting",
                    L"Error", MB_OK);
         delete [] file_data;
@@ -122,7 +100,7 @@ void PatchRagdolls(HWND hwnd) {
     }
 
     // Output our patched file_data to the dll file
-    if (!WriteDll(dll_location, file_data, file_size)) {
+    if (!SaveFile(dll_location, file_data, file_size)) {
         MessageBox(hwnd, L"Failed to open Engine.dll", L"Error", MB_OK);
         delete [] file_data;
         return;
@@ -150,6 +128,8 @@ BOOL CALLBACK DialogProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
             SendMessage(GetDlgItem(hwnd, IDC_FILE), 0x1501, 0,
                         (LPARAM)L"Location of Engine.dll");
 
+            // TODO: Collect return values from SendMessage and use them to
+            // translate selection to intent
             // Populate combobox
             HWND combo = GetDlgItem(hwnd, IDC_PATCHTYPE);
             SendMessage(combo, CB_ADDSTRING, 0, (LPARAM)L"Super Rocket Ragdolls");

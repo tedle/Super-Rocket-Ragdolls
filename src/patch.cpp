@@ -1,3 +1,10 @@
+// patch.cpp-------------------------------------------------------------------
+// Uses various file IO to load game code into memory for modification. This
+// is for optimization reasons since it lets us be more modular in the changes
+// we make as well as allow us to hold off on committing any changes to the
+// .DLL file until we're sure the full patch will be successful
+// ----------------------------------------------------------------------------
+
 #include "patch.h"
 #include "pattern.h"
 
@@ -26,6 +33,32 @@ bool LoadFile(const char* file_name, PBYTE* file_data, size_t* file_size) {
 
     // Cleanup
     fclose(file);
+    return true;
+}
+
+// Expects file already loaded into memory for optimization reasons
+bool SaveFile(const char* file_location, PBYTE file_data, size_t file_size,
+              bool backup) {
+    FILE* file;
+    char dll[1024] = {0};
+    strcat_s(dll, file_location);
+    if (backup) {
+        strcat_s(dll, ".bak");
+        // Checks if there is already a backup of the dll, and aborts if so
+        // because this implies Engine.dll is already modified and should not
+        // be written to a backup
+        fopen_s(&file, dll, "r");
+        if (file != nullptr) {
+            fclose(file);
+            return true;
+        }
+    }
+    if (fopen_s(&file, dll, "wb") != 0) {
+        return false;
+    }
+    fwrite(file_data, sizeof(BYTE), file_size, file);
+    fclose(file);
+
     return true;
 }
 
