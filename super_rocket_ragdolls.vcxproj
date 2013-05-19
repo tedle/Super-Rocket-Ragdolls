@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\patch.h" />
+    <ClInclude Include="src\pattern.h" />
     <ClInclude Include="src\resource.h" />
   </ItemGroup>
   <ItemGroup>

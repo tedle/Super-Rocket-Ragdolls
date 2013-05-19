@@ -9,8 +9,8 @@ bool LoadFile(const char* filename, PBYTE* file_data, size_t* file_size);
 // Searches for needle in haystack
 // If needle_mask[i] is false, needle[i] is not evaluated
 // Returns position of first match
-size_t PatternSearch(const PBYTE haystack, const size_t haystack_size,
-                     const PBYTE needle, const size_t needle_size,
+size_t PatternSearch(const BYTE* haystack, const size_t haystack_size,
+                     const BYTE* needle, const size_t needle_size,
                      const bool* needle_mask);
 
 // Scans file in memory for the code we need to modify to make
