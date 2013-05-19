@@ -17,25 +17,25 @@
 // Creates a browse for file dialog using Win32 API
 void BrowseForDll(HWND hwnd) {
     OPENFILENAMEA ofn = {0};
-	char file[1024];
+    char file[1024];
 
-	ofn.lStructSize = sizeof(ofn);
-	ofn.hwndOwner = hwnd;
-	ofn.lpstrFile = file;
-	ofn.lpstrFile[0] = '\0';
-	ofn.nMaxFile = sizeof(file);
-	ofn.lpstrFilter = "All (*.*)\0*.*\0Engine.dll\0ENGINE.DLL\0";
-	ofn.nFilterIndex = 2;
-	ofn.lpstrFileTitle = NULL;
-	ofn.nMaxFileTitle = 0;
-	ofn.lpstrInitialDir = "%PROGRAMFILES(X86)%\\Steam\\steamapps\\common\\Grim Dawn";
-	ofn.Flags = OFN_PATHMUSTEXIST|OFN_FILEMUSTEXIST;
+    ofn.lStructSize = sizeof(ofn);
+    ofn.hwndOwner = hwnd;
+    ofn.lpstrFile = file;
+    ofn.lpstrFile[0] = '\0';
+    ofn.nMaxFile = sizeof(file);
+    ofn.lpstrFilter = "All (*.*)\0*.*\0Engine.dll\0ENGINE.DLL\0";
+    ofn.nFilterIndex = 2;
+    ofn.lpstrFileTitle = NULL;
+    ofn.nMaxFileTitle = 0;
+    ofn.lpstrInitialDir = "%PROGRAMFILES(X86)%\\Steam\\steamapps\\common\\Grim Dawn";
+    ofn.Flags = OFN_PATHMUSTEXIST|OFN_FILEMUSTEXIST;
 
-	GetOpenFileNameA(&ofn);
+    GetOpenFileNameA(&ofn);
 
-	SetDlgItemTextA(hwnd, IDC_FILE, file);
+    SetDlgItemTextA(hwnd, IDC_FILE, file);
 
-	return;
+    return;
 }
 
 // Patches Grim Dawn's Engine.dll to provide rocket ragdoll physics
