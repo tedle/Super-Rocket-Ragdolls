@@ -68,6 +68,7 @@ void PatchRagdolls(HWND hwnd) {
 
     PBYTE file_data;
     size_t file_size;
+    PatchType patch;
 
     // Load Engine.dll into memory
     if (!LoadFile(dll_location, &file_data, &file_size)) {
@@ -83,26 +84,24 @@ void PatchRagdolls(HWND hwnd) {
         return;
     }
 
-    bool success = false;
-
     // Get selection from physics behaviour combo box
-    // Then apply appropriate settings
+    // Then translate to appropriate physics setting
     switch(SendMessage(GetDlgItem(hwnd, IDC_PATCHTYPE), CB_GETCURSEL, 0, 0)) {
         // Super Rocket Ragdolls
         case 0:
-            success = PatchSuperRocketRagdolls(file_data, file_size);
+            patch = kSuperRocketRagdolls;
             break;
         // Super Flying Bodies
         case 1:
-            success = PatchSuperFlyingBodies(file_data, file_size);
+            patch = kSuperFlyingBodies;
             break;
         // Lesser Flying Bodies
         case 2:
-            success = PatchLesserFlyingBodies(file_data, file_size);
+            patch = kLesserFlyingBodies;
             break;
         // Regular Ragdolls
         case 3:
-            success = PatchRegularRagdolls(file_data, file_size);
+            patch = kOriginal;
             break;
         // Should really be checking this before we open the file...
         default:
@@ -111,6 +110,9 @@ void PatchRagdolls(HWND hwnd) {
             delete [] file_data;
             return;
     }
+
+    // Patch the file loaded into memory with new physics settings
+    bool success = PatchMemory(file_data, file_size, patch);
 
     // Oh no!
     if (!success) {

@@ -1,6 +1,14 @@
 #include <stdio.h>
 #include <Windows.h>
 
+// Used to tell PatchMemory what kind of physics modifications to make
+enum PatchType {
+    kOriginal            = 0,
+    kSuperRocketRagdolls = 1,
+    kSuperFlyingBodies   = 2,
+    kLesserFlyingBodies  = 3
+};
+
 // Loads file into memory
 // Uses file_data and file_size as output args
 // Returns true on success, false on failure
@@ -14,9 +22,6 @@ size_t PatternSearch(const BYTE* haystack, const size_t haystack_size,
                      const bool* needle_mask);
 
 // Scans file in memory for the code we need to modify to make
-// Super Rocket Ragdolls happen
+// new physics behaviours happen
 // Returns true on success, false otherwise
-bool PatchSuperRocketRagdolls(PBYTE file_data, const size_t file_size);
-bool PatchSuperFlyingBodies(PBYTE file_data, const size_t file_size);
-bool PatchLesserFlyingBodies(PBYTE file_data, const size_t file_size);
-bool PatchRegularRagdolls(PBYTE file_data, const size_t file_size);
+bool PatchMemory(PBYTE file_data, const size_t file_size, PatchType type);
