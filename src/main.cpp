@@ -32,17 +32,25 @@ void BrowseForDll(HWND hwnd) {
 // memory for optimization reasons
 // Returns true on success, false otherwise
 bool WriteDll(const char* file_location, PBYTE file_data, size_t file_size, bool backup=false) {
+    FILE* file;
     char dll_backup[1024] = {0};
     strcat_s(dll_backup, file_location);
     if (backup) {
         strcat_s(dll_backup, ".bak");
+        // Checks if there is already a backup of the dll, and aborts if so
+        // because this implies Engine.dll is already modified and should not
+        // be written to a backup
+        fopen_s(&file, dll_backup, "r");
+        if (file != nullptr) {
+            fclose(file);
+            return true;
+        }
     }
-    FILE* backup_file;
-    if (fopen_s(&backup_file, dll_backup, "wb") != 0) {
+    if (fopen_s(&file, dll_backup, "wb") != 0) {
         return false;
     }
-    fwrite(file_data, sizeof(BYTE), file_size, backup_file);
-    fclose(backup_file);
+    fwrite(file_data, sizeof(BYTE), file_size, file);
+    fclose(file);
 
     return true;
 }
