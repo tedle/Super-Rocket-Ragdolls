@@ -7,7 +7,7 @@ const BYTE force_cap_pattern[] = {0x00, 0x00, 0x40, 0x41,
                                   0x6F, 0x12, 0x83, 0x3A,
                                   0x00, 0x00, 0x00, 0x00,
                                   0x00, 0x00, 0x2E, 0x40};
-const bool force_cap_mask[]    = {true, true,false, true,
+const bool force_cap_mask[]    = {true, true,false,false,
                                   true, true, true, true,
                                   true, true, true, true,
                                   true, true, true, true};

@@ -100,3 +100,96 @@ bool PatchSuperRocketRagdolls(PBYTE file_data, const size_t file_size) {
 
     return true;
 }
+
+// Searches for predetermined patterns discovered through debugging
+// in the file_data (of Engine.dll), and replaces them with new values
+// to provide the changed physics behaviour
+bool PatchSuperFlyingBodies(PBYTE file_data, const size_t file_size) {
+    // Search for the physics cap, a 32-bit float
+    // and change it to              32-bit float = 24.0
+    // 00 00 40 41 ---> 00 00 C0 41
+    BYTE force_cap_replace[] = {0x00, 0x00, 0xC0, 0x41};
+
+    // Find the file position of the force cap pattern
+    size_t match = PatternSearch(file_data, file_size, force_cap_pattern,
+                          sizeof(force_cap_pattern), force_cap_mask);
+    if (!match) {
+        return false;
+    }
+
+    // Replace
+    memcpy(file_data+match, force_cap_replace, sizeof(force_cap_replace));
+
+    // Find the file position of skyward force pattern
+    match = PatternSearch(file_data, file_size, y_force_pattern,
+                                 sizeof(y_force_pattern), y_force_mask);
+    if (!match) {
+        return false;
+    }
+
+    // Ensure skyward force is set to default
+    memcpy(file_data+match, y_force_pattern, sizeof(y_force_pattern));
+
+
+    return true;
+}
+
+// Searches for predetermined patterns discovered through debugging
+// in the file_data (of Engine.dll), and replaces them with new values
+// to provide the changed physics behaviour
+bool PatchLesserFlyingBodies(PBYTE file_data, const size_t file_size) {
+    // Search for the physics cap, a 32-bit float
+    // and change it to              32-bit float = 1.0
+    // 00 00 40 41 ---> 00 00 80 3F
+    BYTE force_cap_replace[] = {0x00, 0x00, 0x80, 0x3F};
+
+    // Find the file position of the force cap pattern
+    size_t match = PatternSearch(file_data, file_size, force_cap_pattern,
+                          sizeof(force_cap_pattern), force_cap_mask);
+    if (!match) {
+        return false;
+    }
+
+    // Replace
+    memcpy(file_data+match, force_cap_replace, sizeof(force_cap_replace));
+
+    // Find the file position of skyward force pattern
+    match = PatternSearch(file_data, file_size, y_force_pattern,
+                                 sizeof(y_force_pattern), y_force_mask);
+    if (!match) {
+        return false;
+    }
+
+    // Ensure skyward force is set to default
+    memcpy(file_data+match, y_force_pattern, sizeof(y_force_pattern));
+
+
+    return true;
+}
+
+// Searches for predetermined patterns discovered through debugging
+// in the file_data (of Engine.dll), and ensures they're set to values
+bool PatchRegularRagdolls(PBYTE file_data, const size_t file_size) {
+    // Find the file position of the force cap pattern
+    size_t match = PatternSearch(file_data, file_size, force_cap_pattern,
+                          sizeof(force_cap_pattern), force_cap_mask);
+    if (!match) {
+        return false;
+    }
+
+    // Ensure force cap is set to default
+    memcpy(file_data+match, force_cap_pattern, sizeof(force_cap_pattern));
+
+    // Find the file position of skyward force pattern
+    match = PatternSearch(file_data, file_size, y_force_pattern,
+                                 sizeof(y_force_pattern), y_force_mask);
+    if (!match) {
+        return false;
+    }
+
+    // Ensure skyward force is set to default
+    memcpy(file_data+match, y_force_pattern, sizeof(y_force_pattern));
+
+
+    return true;
+}

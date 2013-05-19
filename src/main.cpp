@@ -1,3 +1,8 @@
+// Need somes WinXP features
+#define WINVER 0x0501
+#define _WIN32_WINNT 0x0501
+#define NTDDI_VERSION 0x05010300
+
 #include <stdio.h>
 #include <Windows.h>
 
@@ -33,20 +38,20 @@ void BrowseForDll(HWND hwnd) {
 // Returns true on success, false otherwise
 bool WriteDll(const char* file_location, PBYTE file_data, size_t file_size, bool backup=false) {
     FILE* file;
-    char dll_backup[1024] = {0};
-    strcat_s(dll_backup, file_location);
+    char dll[1024] = {0};
+    strcat_s(dll, file_location);
     if (backup) {
-        strcat_s(dll_backup, ".bak");
+        strcat_s(dll, ".bak");
         // Checks if there is already a backup of the dll, and aborts if so
         // because this implies Engine.dll is already modified and should not
         // be written to a backup
-        fopen_s(&file, dll_backup, "r");
+        fopen_s(&file, dll, "r");
         if (file != nullptr) {
             fclose(file);
             return true;
         }
     }
-    if (fopen_s(&file, dll_backup, "wb") != 0) {
+    if (fopen_s(&file, dll, "wb") != 0) {
         return false;
     }
     fwrite(file_data, sizeof(BYTE), file_size, file);
@@ -78,7 +83,34 @@ void PatchRagdolls(HWND hwnd) {
         return;
     }
 
-    bool success = PatchSuperRocketRagdolls(file_data, file_size);
+    bool success = false;
+
+    // Get selection from physics behaviour combo box
+    // Then apply appropriate settings
+    switch(SendMessage(GetDlgItem(hwnd, IDC_PATCHTYPE), CB_GETCURSEL, 0, 0)) {
+        // Super Rocket Ragdolls
+        case 0:
+            success = PatchSuperRocketRagdolls(file_data, file_size);
+            break;
+        // Super Flying Bodies
+        case 1:
+            success = PatchSuperFlyingBodies(file_data, file_size);
+            break;
+        // Lesser Flying Bodies
+        case 2:
+            success = PatchLesserFlyingBodies(file_data, file_size);
+            break;
+        // Regular Ragdolls
+        case 3:
+            success = PatchRegularRagdolls(file_data, file_size);
+            break;
+        // Should really be checking this before we open the file...
+        default:
+            MessageBox(hwnd, L"Please select a physics behaviour", L"Error",
+                       MB_OK);
+            delete [] file_data;
+            return;
+    }
 
     // Oh no!
     if (!success) {
@@ -111,6 +143,19 @@ BOOL CALLBACK DialogProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
             HICON icon = LoadIcon(GetModuleHandle(0),
                                   MAKEINTRESOURCE(IDR_ICON));
             SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)icon);
+            // Set the text box cue banner
+            // 0x1501 is EM_SETCUEBANNER, this is undeclared for some reason...?
+            SendMessage(GetDlgItem(hwnd, IDC_FILE), 0x1501, 0,
+                        (LPARAM)L"Location of Engine.dll");
+
+            // Populate combobox
+            HWND combo = GetDlgItem(hwnd, IDC_PATCHTYPE);
+            SendMessage(combo, CB_ADDSTRING, 0, (LPARAM)L"Super Rocket Ragdolls");
+            SendMessage(combo, CB_ADDSTRING, 0, (LPARAM)L"Super Flying Bodies");
+            SendMessage(combo, CB_ADDSTRING, 0, (LPARAM)L"Lesser Flying Bodies");
+            SendMessage(combo, CB_ADDSTRING, 0, (LPARAM)L"Regular Ragdolls");
+            // Select default "Super Rocket Ragdolls"
+            SendMessage(combo, CB_SETCURSEL, 0, 0);
             return TRUE;
         }
 

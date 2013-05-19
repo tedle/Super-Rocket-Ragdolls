@@ -17,3 +17,6 @@ size_t PatternSearch(const BYTE* haystack, const size_t haystack_size,
 // Super Rocket Ragdolls happen
 // Returns true on success, false otherwise
 bool PatchSuperRocketRagdolls(PBYTE file_data, const size_t file_size);
+bool PatchSuperFlyingBodies(PBYTE file_data, const size_t file_size);
+bool PatchLesserFlyingBodies(PBYTE file_data, const size_t file_size);
+bool PatchRegularRagdolls(PBYTE file_data, const size_t file_size);
