@@ -15,3 +15,7 @@ programs.
 
 Q: What if Engine.dll becomes corrupted?
 A: There should be a backup in the same folder called Engine.dll.bak
+
+Thanks:
+-------
+Huge thanks to Bman for creating the original Super/Lesser Flying Bodies mod for Titan Quest. This entire project was inspired by their fantastic idea.
