@@ -78,8 +78,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\patch.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\patch.h" />
     <ClInclude Include="src\resource.h" />
   </ItemGroup>
   <ItemGroup>
