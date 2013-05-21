@@ -5,6 +5,9 @@
 // vanilla .DLL file
 // ----------------------------------------------------------------------------
 
+#ifndef SRR_PATCH_H_
+#define SRR_PATCH_H_
+
 #include <stdio.h>
 #include <Windows.h>
 
@@ -39,3 +42,5 @@ size_t PatternSearch(const BYTE* haystack, const size_t haystack_size,
 // new physics behaviours happen
 // Returns true on success, false otherwise
 bool PatchMemory(PBYTE file_data, const size_t file_size, PatchType type);
+
+#endif

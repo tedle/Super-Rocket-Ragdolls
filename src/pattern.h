@@ -3,6 +3,9 @@
 // the Grim Dawn's .DLL files
 // ----------------------------------------------------------------------------
 
+#ifndef SRR_PATTERN_H_
+#define SRR_PATTERN_H_
+
 // Needed for BYTE definition
 #include <Windows.h>
 
@@ -57,3 +60,5 @@ const BYTE kForceCapSuperFlying[] = {0x00, 0x00, 0xC0, 0x41};
 // 00 00 40 41 ---> 00 00 80 3F
 const BYTE kForceCapLesserFlying[] = {0x00, 0x00, 0x80, 0x3F};
 }
+
+#endif
