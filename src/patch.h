@@ -13,10 +13,10 @@
 
 // Used to tell PatchMemory what kind of physics modifications to make
 enum PatchType {
-    kOriginal            = 0,
-    kSuperRocketRagdolls = 1,
-    kSuperFlyingBodies   = 2,
-    kLesserFlyingBodies  = 3
+    kSuperRocketRagdolls = 0,
+    kSuperFlyingBodies   = 1,
+    kLesserFlyingBodies  = 2,
+    kOriginal            = 3
 };
 
 // Loads file into memory

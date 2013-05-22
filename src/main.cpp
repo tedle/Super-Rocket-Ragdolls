@@ -28,7 +28,8 @@ void BrowseForDll(HWND hwnd) {
     ofn.nFilterIndex = 2;
     ofn.lpstrFileTitle = NULL;
     ofn.nMaxFileTitle = 0;
-    ofn.lpstrInitialDir = "%PROGRAMFILES(X86)%\\Steam\\steamapps\\common\\Grim Dawn";
+    ofn.lpstrInitialDir = "%PROGRAMFILES(X86)%\\Steam\\"
+                          "steamapps\\common\\Grim Dawn";
     ofn.Flags = OFN_PATHMUSTEXIST|OFN_FILEMUSTEXIST;
 
     GetOpenFileNameA(&ofn);
@@ -48,6 +49,15 @@ void PatchRagdolls(HWND hwnd) {
     size_t file_size;
     PatchType patch;
 
+    // Check our selected physics behaviour before opening any files
+    int combo_selection = SendMessage(GetDlgItem(hwnd, IDC_PATCHTYPE),
+                                      CB_GETCURSEL, 0, 0);
+    if (combo_selection == CB_ERR) {
+        MessageBox(hwnd, L"Please select a physics behaviour", L"Error", MB_OK);
+        return;
+    }
+    patch = static_cast<PatchType>(combo_selection);
+
     // Load Engine.dll into memory
     if (!LoadFile(dll_location, &file_data, &file_size)) {
         MessageBox(hwnd, L"Failed to open Engine.dll", L"Error", MB_OK);
@@ -60,33 +70,6 @@ void PatchRagdolls(HWND hwnd) {
                    L"Error", MB_OK);
         delete [] file_data;
         return;
-    }
-
-    // Get selection from physics behaviour combo box
-    // Then translate to appropriate physics setting
-    switch(SendMessage(GetDlgItem(hwnd, IDC_PATCHTYPE), CB_GETCURSEL, 0, 0)) {
-        // Super Rocket Ragdolls
-        case 0:
-            patch = kSuperRocketRagdolls;
-            break;
-        // Super Flying Bodies
-        case 1:
-            patch = kSuperFlyingBodies;
-            break;
-        // Lesser Flying Bodies
-        case 2:
-            patch = kLesserFlyingBodies;
-            break;
-        // Regular Ragdolls
-        case 3:
-            patch = kOriginal;
-            break;
-        // Should really be checking this before we open the file...
-        default:
-            MessageBox(hwnd, L"Please select a physics behaviour", L"Error",
-                       MB_OK);
-            delete [] file_data;
-            return;
     }
 
     // Patch the file loaded into memory with new physics settings
@@ -128,14 +111,16 @@ BOOL CALLBACK DialogProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
             SendMessage(GetDlgItem(hwnd, IDC_FILE), 0x1501, 0,
                         (LPARAM)L"Location of Engine.dll");
 
-            // TODO: Collect return values from SendMessage and use them to
-            // translate selection to intent
             // Populate combobox
             HWND combo = GetDlgItem(hwnd, IDC_PATCHTYPE);
-            SendMessage(combo, CB_ADDSTRING, 0, (LPARAM)L"Super Rocket Ragdolls");
-            SendMessage(combo, CB_ADDSTRING, 0, (LPARAM)L"Super Flying Bodies");
-            SendMessage(combo, CB_ADDSTRING, 0, (LPARAM)L"Lesser Flying Bodies");
-            SendMessage(combo, CB_ADDSTRING, 0, (LPARAM)L"Regular Ragdolls");
+            SendMessage(combo, CB_INSERTSTRING, kSuperRocketRagdolls,
+                        (LPARAM)L"Super Rocket Ragdolls");
+            SendMessage(combo, CB_INSERTSTRING, kSuperFlyingBodies,
+                        (LPARAM)L"Super Flying Bodies");
+            SendMessage(combo, CB_INSERTSTRING, kLesserFlyingBodies,
+                        (LPARAM)L"Lesser Flying Bodies");
+            SendMessage(combo, CB_INSERTSTRING, kOriginal,
+                        (LPARAM)L"Regular Ragdolls");
             // Select default "Super Rocket Ragdolls"
             SendMessage(combo, CB_SETCURSEL, 0, 0);
             return TRUE;

@@ -93,7 +93,6 @@ size_t PatternSearch(const BYTE* haystack, const size_t haystack_size,
             }
         }
     }
-
     return 0;
 }
 
